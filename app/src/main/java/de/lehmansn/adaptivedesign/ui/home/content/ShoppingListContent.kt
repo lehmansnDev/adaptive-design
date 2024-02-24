@@ -1,5 +1,6 @@
 package de.lehmansn.adaptivedesign.ui.home.content
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -15,10 +16,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.PaneAdaptedValue
-import androidx.compose.material3.adaptive.ThreePaneScaffoldValue
+import androidx.compose.material3.adaptive.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import de.lehmansn.adaptivedesign.model.Product
 import de.lehmansn.adaptivedesign.model.ShoppingList
 import de.lehmansn.adaptivedesign.ui.home.ShoppingListActions
 import de.lehmansn.adaptivedesign.ui.home.component.OpenProductShoppingListItem
@@ -27,9 +29,16 @@ import de.lehmansn.adaptivedesign.ui.home.component.OpenProductShoppingListItem
 @Composable
 fun ShoppingListContent(
     shoppingList: ShoppingList,
-    scaffoldValue: ThreePaneScaffoldValue,
+    navigator: ThreePaneScaffoldNavigator<Product>,
     actions: ShoppingListActions
 ) {
+    if (navigator.canNavigateBack()) {
+        BackHandler {
+            navigator.navigateBack()
+        }
+    }
+
+    val scaffoldValue = navigator.scaffoldState.scaffoldValue
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(

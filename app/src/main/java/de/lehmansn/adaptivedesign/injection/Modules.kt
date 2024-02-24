@@ -6,7 +6,6 @@ import de.lehmansn.adaptivedesign.domain.GetProductsUseCase
 import de.lehmansn.adaptivedesign.network.ShopRemoteSource
 import de.lehmansn.adaptivedesign.network.fakeShopClient
 import de.lehmansn.adaptivedesign.ui.home.HomeViewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -20,5 +19,5 @@ val appModule = module {
     factoryOf(::ProductMapper)
     factoryOf(::GetProductsUseCase)
 
-    viewModelOf(::HomeViewModel)
+    factoryOf(::HomeViewModel)
 }

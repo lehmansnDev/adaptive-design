@@ -1,7 +1,7 @@
 package de.lehmansn.adaptivedesign.ui.home
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import de.lehmansn.adaptivedesign.domain.GetProductsUseCase
 import de.lehmansn.adaptivedesign.model.Product
 import kotlinx.coroutines.CoroutineScope
@@ -13,9 +13,9 @@ import kotlin.coroutines.CoroutineContext
 
 class HomeViewModel(
     private val getProducts: GetProductsUseCase
-) : ViewModel(), CoroutineScope {
+) : ScreenModel, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext = viewModelScope.coroutineContext
+    override val coroutineContext: CoroutineContext = screenModelScope.coroutineContext
 
     private val _state: MutableStateFlow<HomeState> = MutableStateFlow(HomeState.Loading)
     val state: StateFlow<HomeState> = _state.asStateFlow()

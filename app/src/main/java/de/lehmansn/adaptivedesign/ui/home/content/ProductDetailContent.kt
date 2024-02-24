@@ -1,5 +1,6 @@
 package de.lehmansn.adaptivedesign.ui.home.content
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -18,7 +19,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.PaneAdaptedValue
-import androidx.compose.material3.adaptive.ThreePaneScaffoldValue
+import androidx.compose.material3.adaptive.ThreePaneScaffoldNavigator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,9 +32,14 @@ import de.lehmansn.adaptivedesign.model.Product
 @Composable
 fun ProductDetailContent(
     product: Product,
-    scaffoldValue: ThreePaneScaffoldValue,
+    navigator: ThreePaneScaffoldNavigator<Product>,
     onBackClick: () -> Unit
 ) {
+    BackHandler {
+        navigator.navigateBack()
+    }
+
+    val scaffoldValue = navigator.scaffoldState.scaffoldValue
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(

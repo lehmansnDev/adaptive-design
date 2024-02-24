@@ -10,6 +10,7 @@ import androidx.compose.material3.adaptive.navigationsuite.ExperimentalMaterial3
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScope
 import androidx.compose.runtime.Composable
+import cafe.adriel.voyager.navigator.Navigator
 import de.lehmansn.adaptivedesign.ui.home.HomeScreen
 
 @OptIn(ExperimentalMaterial3AdaptiveNavigationSuiteApi::class)
@@ -22,7 +23,7 @@ fun MainScreen() {
             email(selected = false, onClick = {})
         }
     ) {
-        HomeScreen()
+        Navigator(HomeScreen)
     }
 }
 

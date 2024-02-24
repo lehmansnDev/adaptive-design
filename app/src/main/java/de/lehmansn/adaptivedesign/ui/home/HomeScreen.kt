@@ -15,64 +15,68 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.koin.getScreenModel
 import de.lehmansn.adaptivedesign.model.Product
 import de.lehmansn.adaptivedesign.ui.home.content.ErrorContent
 import de.lehmansn.adaptivedesign.ui.home.content.LoadingContent
 import de.lehmansn.adaptivedesign.ui.home.content.OfferListContent
 import de.lehmansn.adaptivedesign.ui.home.content.ProductDetailContent
 import de.lehmansn.adaptivedesign.ui.home.content.ShoppingListContent
-import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
-@Composable
-fun HomeScreen() {
-    val viewModel: HomeViewModel = koinViewModel()
-    val state by viewModel.state.collectAsState()
+object HomeScreen: Screen {
 
-    LaunchedEffect(Unit) {
-        viewModel.initialize()
-    }
+    @Composable
+    override fun Content() {
+        val viewModel = getScreenModel<HomeViewModel>()
+        val state by viewModel.state.collectAsState()
 
-    val scaffoldState = calculateListDetailPaneScaffoldState()
-    val navigator = rememberListDetailPaneScaffoldNavigator<Product>(
-        scaffoldDirective = PaneScaffoldDirective(
-            contentPadding = PaddingValues(0.dp),
-            maxHorizontalPartitions = when (state) {
-                is HomeState.Content -> scaffoldState.scaffoldDirective.maxHorizontalPartitions
-                is HomeState.Error,
-                HomeState.Loading -> 1
-            },
-            horizontalPartitionSpacerSize = 0.dp,
-            maxVerticalPartitions = 1,
-            verticalPartitionSpacerSize = 0.dp,
-            excludedBounds = emptyList()
-        ),
-    )
+        LaunchedEffect(Unit) {
+            viewModel.initialize()
+        }
 
-    HomeScaffold(
-        state = state,
-        navigator = navigator,
-        actions = HomeActions(
-            topBarActions = TopBarActions(
-                onShoppingListClick = {
-                    if (navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Extra) {
-                        navigator.navigateBack()
-                    } else {
-                        navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+        val scaffoldState = calculateListDetailPaneScaffoldState()
+        val navigator = rememberListDetailPaneScaffoldNavigator<Product>(
+            scaffoldDirective = PaneScaffoldDirective(
+                contentPadding = PaddingValues(0.dp),
+                maxHorizontalPartitions = when (state) {
+                    is HomeState.Content -> scaffoldState.scaffoldDirective.maxHorizontalPartitions
+                    is HomeState.Error,
+                    HomeState.Loading -> 1
+                },
+                horizontalPartitionSpacerSize = 0.dp,
+                maxVerticalPartitions = 1,
+                verticalPartitionSpacerSize = 0.dp,
+                excludedBounds = emptyList()
+            ),
+        )
+
+        HomeScaffold(
+            state = state,
+            navigator = navigator,
+            actions = HomeActions(
+                topBarActions = TopBarActions(
+                    onShoppingListClick = {
+                        if (navigator.currentDestination?.pane == ListDetailPaneScaffoldRole.Extra) {
+                            navigator.navigateBack()
+                        } else {
+                            navigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+                        }
                     }
-                }
-            ),
-            productListItemActions = ProductListItemActions(
-                onAddClick = { viewModel.addProductToShoppingList(it) },
-                onClick = {
-                    navigator.navigateTo(ListDetailPaneScaffoldRole.Extra, it)
-                }
-            ),
-            shoppingListActions = ShoppingListActions(
-                onBackClick = { navigator.navigateBack() }
+                ),
+                productListItemActions = ProductListItemActions(
+                    onAddClick = { viewModel.addProductToShoppingList(it) },
+                    onClick = {
+                        navigator.navigateTo(ListDetailPaneScaffoldRole.Extra, it)
+                    }
+                ),
+                shoppingListActions = ShoppingListActions(
+                    onBackClick = { navigator.navigateBack() }
+                )
             )
         )
-    )
+    }
 }
 
 @Composable
@@ -102,7 +106,7 @@ private fun HomeScaffold(
                 when (state) {
                     is HomeState.Content -> ShoppingListContent(
                         shoppingList = state.shoppingList,
-                        scaffoldValue = navigator.scaffoldState.scaffoldValue,
+                        navigator = navigator,
                         actions = actions.shoppingListActions
                     )
 
@@ -115,7 +119,7 @@ private fun HomeScaffold(
                 navigator.currentDestination?.content?.let { product ->
                     ProductDetailContent(
                         product = product,
-                        scaffoldValue = navigator.scaffoldState.scaffoldValue,
+                        navigator,
                         onBackClick = actions.shoppingListActions.onBackClick
                     )
                 }
