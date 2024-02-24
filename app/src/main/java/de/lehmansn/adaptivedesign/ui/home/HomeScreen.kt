@@ -20,7 +20,7 @@ import cafe.adriel.voyager.koin.getScreenModel
 import de.lehmansn.adaptivedesign.model.Product
 import de.lehmansn.adaptivedesign.ui.home.content.ErrorContent
 import de.lehmansn.adaptivedesign.ui.home.content.LoadingContent
-import de.lehmansn.adaptivedesign.ui.home.content.OfferListContent
+import de.lehmansn.adaptivedesign.ui.home.content.SalesContent
 import de.lehmansn.adaptivedesign.ui.home.content.ProductDetailContent
 import de.lehmansn.adaptivedesign.ui.home.content.ShoppingListContent
 
@@ -90,7 +90,7 @@ private fun HomeScaffold(
         listPane = {
             AnimatedPane(modifier = Modifier) {
                 when (state) {
-                    is HomeState.Content -> OfferListContent(
+                    is HomeState.Content -> SalesContent(
                         state = state,
                         scaffoldValue = navigator.scaffoldState.scaffoldValue,
                         actions = actions
